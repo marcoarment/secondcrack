@@ -1,0 +1,16 @@
+Options -MultiViews
+
+AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript text/xml text/rss text/rss+xml
+
+RewriteEngine On
+
+RewriteRule ^([^\.]*)$ - [T=text/html]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [QSA,L]
+
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+

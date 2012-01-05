@@ -1,0 +1,26 @@
+<?php
+// ----- Don't edit this -----------------
+require_once(dirname(__FILE__) . '/engine/Updater.php');
+// ---------------------------------------
+
+
+// ----- You can edit these settings: -----
+
+date_default_timezone_set('America/New_York'); // Sometimes I hate PHP. This is one of those times.
+
+// Paths
+Updater::$source_path   = '/home/marco/Dropbox/Blog';
+Template::$template_dir = '/home/marco/Dropbox/Blog/templates';
+Updater::$dest_path     = '/home/marco/secondcrack/www';
+Updater::$cache_path    = '/home/marco/secondcrack/cache';
+
+// Blog metadata
+Post::$blog_title = 'My Blog';
+Post::$blog_url   = 'http://www.mydomain.com/';
+Post::$blog_description = 'I\'m a blogger.';
+
+// Meta Weblog API params
+Updater::$api_blog_id = 1; // leave this, probably
+Updater::$api_blog_username = 'make up a username';
+Updater::$api_blog_password = 'whatever password you want';
+
