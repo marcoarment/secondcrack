@@ -10,7 +10,7 @@ if (! isset($_SERVER['PHP_AUTH_USER']) ||
 ) {
     header('WWW-Authenticate: Basic realm="' . Post::$blog_title . '"');
     header('HTTP/1.0 401 Unauthorized');
-    sleep(3);
+    //sleep(3);
     exit;
 }
 
