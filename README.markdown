@@ -145,6 +145,8 @@ Your username and password to use these are set in `config.php` under "Meta Webl
 
 # Dropbox sync (strongly recommended)
 
+Here's <a href="http://www.youtube.com/watch?v=cu5uXXulnNk">a video demo</a> of why you *really* want Dropbox sync and those bookmarklets.
+
 Second Crack's updater examines the blog source directory for changes, then writes HTML files into the web directory as needed.
 
 If you're writing on a computer, you probably have a server hosting the blog somewhere, and need some way to update the content on the server. The best way to do this, and the setup that Second Crack is designed to operate in, is to set up Dropbox in both places: the native client for your computer, and the <a href="https://www.dropbox.com/install?os=lnx">Linux CLI client</a> on the server.
