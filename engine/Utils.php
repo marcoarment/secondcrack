@@ -27,7 +27,7 @@ function file_put_contents_as_dir_owner($filename, $data)
 function mkdir_as_parent_owner($pathname, $mode = 0777, $recursive = false)
 {
     if (false !== ($ret = mkdir($pathname, $mode, $recursive)) ) {
-        _match_owners_if_possible($filename, dirname($pathname));
+        _match_owners_if_possible($pathname, dirname($pathname));
     }
     return $ret;
 }
