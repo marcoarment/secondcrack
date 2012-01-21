@@ -239,7 +239,7 @@ class Post
         if ($draft) file_put_contents_as_dir_owner(Updater::$source_path . '/drafts/_previews/' . $this->slug . '.html', $output_html);
     }
     
-    public static function write_index($dest_path, $title, $type, array $posts, $template = 'main.html', $archive_array = false)
+    public static function write_index($dest_path, $title, $type, array $posts, $template = 'main.html', $archive_array = false, $seq_count = 0)
     {
         $posts_data = array();
         foreach ($posts as $p) $posts_data[] = $p->array_for_template();
@@ -254,11 +254,54 @@ class Post
             'posts' => $posts_data
         );
         if ($archive_array) $t->content['archives'] = $archive_array;
+        $t->content['has_younger'] = 0;
+        if ($seq_count > 1) $t->content['has_older'] = 2;
         $output_html = $t->outputHTML();
         
         $output_path = dirname($dest_path);
         if (! file_exists($output_path)) mkdir_as_parent_owner($output_path, 0755, true);
         file_put_contents_as_dir_owner($dest_path, $output_html);
+    }
+
+    public function write_index_sequence($dest_path, $title, $type, array $posts, $template = 'main.html', $archive_array = false, $posts_per_page = 20)
+    {
+        $sequence = 0;
+        $goon = true;
+        $new_dest_path = $dest_path;
+        $total_sequences = ceil(count($posts) / $posts_per_page);
+        while($goon) {
+            $sequence++;
+            $seq_array = array();
+            for ($i=0; $i < $posts_per_page; $i++) {
+                if (count($posts) > 0) $seq_array[] = array_shift($posts);
+            }
+            $new_dest_path = $dest_path . "-" . $sequence . ".html";
+
+            $posts_data = array();
+            foreach ($seq_array as $p) $posts_data[] = $p->array_for_template();
+
+            $t = new Template($template ? $template : 'main.html');
+            $t->content = array(
+                'page-title' => html_entity_decode(SmartyPants($title), ENT_QUOTES, 'UTF-8'),
+                'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
+                'blog-url' => self::$blog_url,
+                'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
+                'page-type' => $type,
+                'posts' => $posts_data
+            );
+            if ($archive_array) $t->content['archives'] = $archive_array;
+            if ($sequence != 1) $t->content['has_younger'] = ($sequence - 1);
+            if ($sequence < $total_sequences) $t->content['has_older'] = ($sequence + 1);
+            $output_html = $t->outputHTML();
+            
+            $output_path = dirname($new_dest_path);
+            if (! file_exists($output_path)) mkdir_as_parent_owner($output_path, 0755, true);
+            file_put_contents_as_dir_owner($new_dest_path, $output_html);
+
+            if (count($posts) == 0) $goon = false;
+        }
+
+        return $total_sequences;
     }
 
     public static function parse_tag_str($tag_str)
