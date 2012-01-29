@@ -4,6 +4,9 @@ require_once(dirname(__FILE__) . '/Post.php');
 
 class Updater
 {
+    public static $seq_count;
+    public static $has_younger;
+    public static $has_older;
     public static $source_path;
     public static $dest_path;
     public static $cache_path;
@@ -502,13 +505,24 @@ class Updater
             error_log("Updating frontpage...");
             self::$changes_were_written = true;
 
+            self::$seq_count = Post::write_index_sequence(
+                self::$dest_path . "/index", 
+                Post::$blog_title, 
+                'frontpage', 
+                Post::from_files(self::most_recent_post_filenames(0, self::$frontpage_tag_filter, self::$frontpage_type_filter)),
+                self::$frontpage_template,
+                self::archive_array(),
+                self::$frontpage_post_limit
+            );
+
             Post::write_index(
                 self::$dest_path . "/index.html", 
                 Post::$blog_title, 
                 'frontpage', 
                 Post::from_files(self::most_recent_post_filenames(self::$frontpage_post_limit, self::$frontpage_tag_filter, self::$frontpage_type_filter)),
                 self::$frontpage_template,
-                self::archive_array()
+                self::archive_array(),
+                self::$seq_count
             );
 
             error_log("Updating RSS...");
@@ -543,13 +557,24 @@ class Updater
             error_log("Updating tag: $tag");
             self::$changes_were_written = true;
 
+            self::$seq_count = Post::write_index_sequence(
+                self::$dest_path . "/tagged-$tag", 
+                Post::$blog_title, 
+                'frontpage', 
+                Post::from_files(self::most_recent_post_filenames(0, $tag, self::$archive_tag_filter)),
+                self::$tag_page_template,
+                self::archive_array(),
+                self::$frontpage_post_limit
+            );
+
             Post::write_index(
                 self::$dest_path . "/tagged-$tag.html", 
                 Post::$blog_title, 
                 'tag', 
                 Post::from_files(self::most_recent_post_filenames(self::$frontpage_post_limit, $tag, self::$archive_tag_filter)),
                 self::$tag_page_template,
-                self::archive_array('tagged-' . $tag)
+                self::archive_array('tagged-' . $tag),
+                self::$seq_count
             );
 
             Post::write_index(
