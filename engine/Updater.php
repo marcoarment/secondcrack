@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . '/Post.php');
+require_once(dirname(__FILE__) . '/Hook.php');
 
 class Updater
 {
@@ -318,6 +319,7 @@ class Updater
                 $dir = dirname($expected_fname);
                 if (! file_exists($dir)) mkdir_as_parent_owner($dir, 0755, true);
                 if (file_put_contents_as_dir_owner($expected_fname, $post->normalized_source())) safe_unlink($filename);
+                self::post_hooks($post);
             }
 
             if (! file_exists($filename)) {
@@ -338,6 +340,7 @@ class Updater
                     $dir = dirname($expected_fname);
                     if (! file_exists($dir)) mkdir_as_parent_owner($dir, 0755, true);
                     if (file_put_contents_as_dir_owner($expected_fname, $post->normalized_source())) safe_unlink($filename);
+                    self::post_hooks($post);
                 } else {
                     $post->write_permalink_page(true);
                 }
@@ -347,6 +350,27 @@ class Updater
                 copy($filename, $draft_dest_path . '/' . basename($filename));
             }
         }        
+    }
+    
+    public static function post_hooks($post)
+    {
+        $dir = self::$source_path . '/hooks';
+        if (is_dir($dir)) {
+            if ($dh = opendir($dir)) {
+                while ( ($file = readdir($dh) ) !== false) {
+                    if ($file[0] == '.') continue;
+                    if (substr($file, 0, 5) == 'post_')
+                    {
+                        $fullpath = $dir . '/' . $file;
+                        require($fullpath);
+                        $className = ucfirst(substr($file, 5, strlen($file) - 9));
+                        $hook = new $className;
+                        $hook->doHook($post);
+                    }
+                }
+                closedir($dh);
+            }
+        }
     }
     
     public static function update_pages()
@@ -646,3 +670,4 @@ class Updater
         }
     }
 }
+
