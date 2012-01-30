@@ -262,7 +262,7 @@ class Post
             'page-type' => $type,
             'posts' => $posts_data,
             'previous_page_url' => false,
-            'next_page_url' => $seq_count > 1 ? substring_before($dest_path, '.', true) . '-2' : false,
+            'next_page_url' => $seq_count > 1 ? substring_after(substring_before($dest_path, '.', true), Updater::$dest_path) . '-2' : false,
             'archives' => $archive_array ? $archive_array : array(),
         );
         $output_html = $t->outputHTML();
@@ -276,7 +276,7 @@ class Post
     {
         $sequence = 0;
         $new_dest_path = $dest_path;
-        $dest_uri = substring_before($dest_path, '.', true);
+        $dest_uri = substring_after(substring_before($dest_path, '.', true), Updater::$dest_path);
         $total_sequences = ceil(count($posts) / $posts_per_page);
         while ($posts) {
             $sequence++;
