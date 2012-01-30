@@ -276,7 +276,7 @@ class Post
     {
         $sequence = 0;
         $new_dest_path = $dest_path;
-        $dest_uri = substring_after(substring_before($dest_path, '.', true), Updater::$dest_path);
+        $dest_uri = substring_after(substring_after($dest_path, '/', true), Updater::$dest_path);
         $total_sequences = ceil(count($posts) / $posts_per_page);
         while ($posts) {
             $sequence++;
