@@ -356,13 +356,12 @@ class Updater
     {
         $dir = self::$source_path . '/hooks';
         if (is_dir($dir)) {
-            if ($dh = opendir($dir)) {
+            if ( ($dh = opendir($dir)) ) {
                 while ( ($file = readdir($dh) ) !== false) {
                     if ($file[0] == '.') continue;
-                    if (substr($file, 0, 5) == 'post_')
-                    {
+                    if (substr($file, 0, 5) == 'post_') {
                         $fullpath = $dir . '/' . $file;
-                        require($fullpath);
+                        require_once($fullpath);
                         $className = ucfirst(substr($file, 5, strlen($file) - 9));
                         $hook = new $className;
                         $hook->doHook($post);
