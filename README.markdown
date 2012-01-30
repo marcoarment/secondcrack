@@ -86,6 +86,9 @@ The engine expects a folder structure like this: (this is your `{SOURCE_PATH}` m
             (this can technically be anywhere but it's easiest to keep it here)
             main.php
             rss.php
+        hooks/
+            (optional, code that executes on every new post, see example-hooks)
+            post_twitter.php
 
 If you're going to use Dropbox to publish, put that top-level blog-source folder somewhere in your Dropbox folder.
 
