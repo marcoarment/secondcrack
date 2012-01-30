@@ -189,6 +189,9 @@ class Post
                 'post-type' => $this->type,
                 'post-permalink' => $base_uri . '/' . $this->slug,
                 'post-permalink-or-link' => isset($this->headers['link']) && $this->headers['link'] ? $this->headers['link'] : $base_uri . '/' . $this->slug,
+                'post-absolute-permalink' => rtrim(self::$blog_url, '/') . $base_uri . '/' . $this->slug,
+                'post-absolute-permalink-or-link' => rtrim(self::$blog_url, '/') . (isset($this->headers['link']) && $this->headers['link'] ? $this->headers['link'] : $base_uri . '/' . $this->slug),
+
                 'post-is-first-on-date' => $this->is_first_post_on_this_date ? 'yes' : '',
             )
         );
