@@ -309,10 +309,10 @@ class Post
 
     public static function parse_tag_str($tag_str)
     {
-		// Tags are comma-separated, and any spaces between multiple words in a tag will be converted to underscores for URLs
-		if (! strlen($tag_str)) return array();
-		$tags = array_map('trim', explode(',', strtolower($tag_str)));
-		$tags = str_replace(' ', '_', $tags);
+        // Tags are comma-separated, and any spaces between multiple words in a tag will be converted to underscores for URLs
+        if (! strlen($tag_str)) return array();
+        $tags = array_map('trim', explode(',', strtolower($tag_str)));
+        $tags = str_replace(' ', '_', $tags);
         $tags = array_unique(array_filter($tags, 'strlen'));
         sort($tags);
         return $tags;

@@ -13,7 +13,7 @@ class Updater
     public static $frontpage_template = 'main.php';
     public static $frontpage_tag_filter = '!rss-only';
     public static $frontpage_type_filter = false;
-	public static $frontpage_paginate = false;
+    public static $frontpage_paginate = false;
 
     public static $rss_post_limit = 20;
     public static $rss_template = 'rss.php';
@@ -24,8 +24,8 @@ class Updater
     public static $archive_year_template = 'main.php';
     public static $archive_tag_filter = '!rss-only';
     public static $archive_type_filter = '!ad';
-	
-	public static $tag_page_post_limit = 20;
+    
+    public static $tag_page_post_limit = 20;
     
     public static $permalink_template = 'main.php';
     public static $tag_page_template  = 'main.php';
@@ -528,19 +528,19 @@ class Updater
             error_log("Updating frontpage...");
             self::$changes_were_written = true;
 
-			$seq_count = 0;
-			if (self::$frontpage_paginate) {
-	            $seq_count = Post::write_index_sequence(
-	                self::$dest_path . "/index", 
-	                Post::$blog_title, 
-	                'frontpage', 
-	                Post::from_files(self::most_recent_post_filenames(0, self::$frontpage_tag_filter, self::$frontpage_type_filter)),
-	                self::$frontpage_template,
-	                self::archive_array(),
-	                self::$frontpage_post_limit
-	            );
-			}
-			
+            $seq_count = 0;
+            if (self::$frontpage_paginate) {
+                $seq_count = Post::write_index_sequence(
+                    self::$dest_path . "/index", 
+                    Post::$blog_title, 
+                    'frontpage', 
+                    Post::from_files(self::most_recent_post_filenames(0, self::$frontpage_tag_filter, self::$frontpage_type_filter)),
+                    self::$frontpage_template,
+                    self::archive_array(),
+                    self::$frontpage_post_limit
+                );
+            }
+            
             Post::write_index(
                 self::$dest_path . "/index.html", 
                 Post::$blog_title, 
