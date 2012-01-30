@@ -37,55 +37,55 @@ Your webserver should use `{SECONDCRACK_PATH}/www` as its document root. It must
 
 Each `.txt` blog-post file is structured like this:
 
-	This is the post title
-	======================
-	Tags: tag1, tag2
-	Published: 2012-01-03 10:22:31pm
-	Type: link
+    This is the post title
+    ======================
+    Tags: tag1, tag2
+    Published: 2012-01-03 10:22:31pm
+    Type: link
     
-	This is the post body, in **Markdown**.
-	
-	It will continue for the rest of the file. See, the top is a lot
-	like an HTTP response with headers, but with a title and a row of 
-	any number of equals signs ("===") as the first two headers.
-	
-	You can add arbitrary fields, formatted like HTTP headers. You
-	can then customize the templates to respond to them.
+    This is the post body, in **Markdown**.
+    
+    It will continue for the rest of the file. See, the top is a lot
+    like an HTTP response with headers, but with a title and a row of 
+    any number of equals signs ("===") as the first two headers.
+    
+    You can add arbitrary fields, formatted like HTTP headers. You
+    can then customize the templates to respond to them.
 
 The engine expects a folder structure like this: (this is your `{SOURCE_PATH}` mentioned above)
 
-	(blog-source folder, name it whatever you want)/
-		drafts/
-			draft-post-slug.txt
-			another-draft-post-slug.txt
-			...
-		media/
-			(images and other files however you want to arrange them. I do it like this:)
-			2010/
-			2011/
-			2012/
-				01/
-					post-slug.png
-					another-day-another-post1.jpg
-					another-day-another-post2.jpg
-					...
-		pages/
-			about.txt
-			contact-me.txt
-			...
-		posts/
-			2010/
-			2011/
-			2012/
-				01/
-					20120102-01-post-slug.txt
-					20120103-01-another-day-another-post.txt
-					20120104-01-something-happened-today.txt
-					20120104-02-something-else-happened-and-its-still-today.txt
-		templates/
-			(this can technically be anywhere but it's easiest to keep it here)
-			main.php
-			rss.php
+    (blog-source folder, name it whatever you want)/
+        drafts/
+            draft-post-slug.txt
+            another-draft-post-slug.txt
+            ...
+        media/
+            (images and other files however you want to arrange them. I do it like this:)
+            2010/
+            2011/
+            2012/
+                01/
+                    post-slug.png
+                    another-day-another-post1.jpg
+                    another-day-another-post2.jpg
+                    ...
+        pages/
+            about.txt
+            contact-me.txt
+            ...
+        posts/
+            2010/
+            2011/
+            2012/
+                01/
+                    20120102-01-post-slug.txt
+                    20120103-01-another-day-another-post.txt
+                    20120104-01-something-happened-today.txt
+                    20120104-02-something-else-happened-and-its-still-today.txt
+        templates/
+            (this can technically be anywhere but it's easiest to keep it here)
+            main.php
+            rss.php
 
 If you're going to use Dropbox to publish, put that top-level blog-source folder somewhere in your Dropbox folder.
 
@@ -99,33 +99,33 @@ The blog-source folder (`{SOURCE_PATH}`) should be set as `Updater::$source_path
 
 Make a file in `drafts/` named as `post-slug-you-want-to-create.txt` like this:
 
-	My draft title
-	==============
-	
-	Draft content.
+    My draft title
+    ==============
+    
+    Draft content.
 
 (Don't set a `Published:` header. The engine will add that automatically later.)
 
 When the updater runs next, the engine will create a sister file in a `_previews/` directory (and a `_publish-now/` directory, if it doesn't already exist), like this:
 
-	drafts/
-		post-slug-you-want-to-create.txt
-		...
-		_previews/
-			post-slug-you-want-to-create.html
-			...
-		_publish-now/
+    drafts/
+        post-slug-you-want-to-create.txt
+        ...
+        _previews/
+            post-slug-you-want-to-create.html
+            ...
+        _publish-now/
 
 Whenever you want to preview your post, just save the `.txt` file, run the updater (or wait for it to run itself), and open the corresponding `.html` file in your browser. When I'm writing, I just keep it open and hit Refresh to see changes.
 
 To publish a post, either move it into the `_publish-now/` directory, or add a header that simply says "publish-now", like this:
 
-	My finished title
-	=================
-	Tags: whatever, optional
-	publish-now
-	
-	Here's my finished content.
+    My finished title
+    =================
+    Tags: whatever, optional
+    publish-now
+    
+    Here's my finished content.
 
 Once that file is saved and the updater runs, it will publish the post immediately, removing it from `drafts/` (and removing its preview file) and moving its final copy into `posts/` in the appropriate year/month subdirectory.
 
@@ -137,7 +137,7 @@ Second Crack comes with a pair of convenience bookmarklets, "Draft Link" and "Dr
 
 To enable this, create a second web root on an alternate domain, e.g. `admin.myblog.com`, using the `api-www/` folder as its document root. Then you can navigate to, e.g.:
 
-	http://admin.myblog.com/add-draft.php
+    http://admin.myblog.com/add-draft.php
 
 ...and install the bookmarklets from there.
 
