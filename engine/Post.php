@@ -207,6 +207,9 @@ class Post
             'blog-url' => self::$blog_url,
             'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
             'page-type' => 'page',
+            'archives' => array(),
+            'previous_page_url' => false,
+            'next_page_url' => false,
         );
         $output_html = $t->outputHTML();
 
@@ -229,7 +232,10 @@ class Post
                 'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
                 'page-type' => 'post',
                 'posts' => array($post_data),
-                'post' => $post_data
+                'post' => $post_data,
+                'archives' => array(),
+                'previous_page_url' => false,
+                'next_page_url' => false,
             )
         );
         $output_html = $t->outputHTML();
@@ -247,18 +253,18 @@ class Post
         $posts_data = array();
         foreach ($posts as $p) $posts_data[] = $p->array_for_template();
 
-        $t = new Template($template ? $template : 'main.html');
+        $t = new Template($template);
         $t->content = array(
             'page-title' => html_entity_decode(SmartyPants($title), ENT_QUOTES, 'UTF-8'),
             'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
             'blog-url' => self::$blog_url,
             'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
             'page-type' => $type,
-            'posts' => $posts_data
+            'posts' => $posts_data,
+            'previous_page_url' => false,
+            'next_page_url' => $seq_count > 1 ? substring_before($dest_path, '.', true) . '-2' : false,
+            'archives' => $archive_array ? $archive_array : array(),
         );
-        if ($archive_array) $t->content['archives'] = $archive_array;
-        $t->content['has_younger'] = 0;
-        if ($seq_count > 1) $t->content['has_older'] = 2;
         $output_html = $t->outputHTML();
         
         $output_path = dirname($dest_path);
@@ -269,39 +275,36 @@ class Post
     public function write_index_sequence($dest_path, $title, $type, array $posts, $template = 'main.html', $archive_array = false, $posts_per_page = 20)
     {
         $sequence = 0;
-        $goon = true;
         $new_dest_path = $dest_path;
+        $dest_uri = substring_before($dest_path, '.', true);
         $total_sequences = ceil(count($posts) / $posts_per_page);
-        while($goon) {
+        while ($posts) {
             $sequence++;
-            $seq_array = array();
-            for ($i=0; $i < $posts_per_page; $i++) {
-                if (count($posts) > 0) $seq_array[] = array_shift($posts);
-            }
-            $new_dest_path = $dest_path . "-" . $sequence . ".html";
+            $seq_array = array_splice($posts, 0, $posts_per_page);
+            if ($sequence == 1) continue; // skip writing the redundant "-1" page
+            
+            $new_dest_path = $dest_path . '-' . $sequence . '.html';
 
             $posts_data = array();
             foreach ($seq_array as $p) $posts_data[] = $p->array_for_template();
 
-            $t = new Template($template ? $template : 'main.html');
+            $t = new Template($template);
             $t->content = array(
                 'page-title' => html_entity_decode(SmartyPants($title), ENT_QUOTES, 'UTF-8'),
                 'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
                 'blog-url' => self::$blog_url,
                 'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
                 'page-type' => $type,
-                'posts' => $posts_data
+                'posts' => $posts_data,
+                'previous_page_url' => $sequence != 1 ? ($sequence == 2 ? $dest_uri : $dest_uri . '-' . ($sequence - 1)) : false,
+                'next_page_url' => $sequence < $total_sequences ? $dest_uri . '-' . ($sequence + 1) : false,
+                'archives' => $archive_array ? $archive_array : array(),
             );
-            if ($archive_array) $t->content['archives'] = $archive_array;
-            if ($sequence != 1) $t->content['has_younger'] = ($sequence - 1);
-            if ($sequence < $total_sequences) $t->content['has_older'] = ($sequence + 1);
             $output_html = $t->outputHTML();
             
             $output_path = dirname($new_dest_path);
             if (! file_exists($output_path)) mkdir_as_parent_owner($output_path, 0755, true);
             file_put_contents_as_dir_owner($new_dest_path, $output_html);
-
-            if (count($posts) == 0) $goon = false;
         }
 
         return $total_sequences;
