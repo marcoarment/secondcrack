@@ -8,7 +8,7 @@ class Updater
     public static $source_path;
     public static $dest_path;
     public static $cache_path;
-    public static $post_extension;
+    public static $post_extension = '.txt';
 
     public static $frontpage_post_limit = 20;
     public static $frontpage_template = 'main.php';
