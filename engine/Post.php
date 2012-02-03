@@ -51,7 +51,7 @@ class Post
     public static function next_sequence_number_for_day($filename_prefix)
     {
         $max = 0;
-        foreach (glob($filename_prefix . '*.txt') as $filename) {
+        foreach (glob($filename_prefix . '*' . Updater::$post_extension) as $filename) {
             $n = intval(substr(substring_after($filename, $filename_prefix), 0, 2));
             if ($n > $max) $max = $n; 
         }
@@ -116,7 +116,7 @@ class Post
             $this->month = intval(substr($filename_datestr, 4, 2));
             $this->day = intval(substr($filename_datestr, 6, 2));
             $this->offset_in_day = intval(substr($filename, 9, 2));
-            $this->slug = ltrim(substr($filename, 11, -4), '-');
+            $this->slug = ltrim(substr($filename, 11, -(strlen(Updater::$post_extension))), '-');
         } else {
             $this->year = intval(idate('Y', $this->timestamp));
             $this->month = intval(idate('m', $this->timestamp));
@@ -152,7 +152,7 @@ class Post
             $slug = $this->slug;
         }
         
-        return $prefix . $padded_offset . '-' . strtolower($slug) . '.txt';
+        return $prefix . $padded_offset . '-' . strtolower($slug) . Updater::$post_extension;
     }
     
     public function normalized_source()

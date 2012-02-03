@@ -13,6 +13,7 @@ Updater::$source_path   = '/home/marco/Dropbox/Blog';
 Template::$template_dir = '/home/marco/Dropbox/Blog/templates';
 Updater::$dest_path     = '/home/marco/secondcrack/www';
 Updater::$cache_path    = '/home/marco/secondcrack/cache';
+Updater::$post_extension = '.md';
 
 // Blog metadata
 Post::$blog_title = 'My Blog';

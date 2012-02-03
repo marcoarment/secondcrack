@@ -8,6 +8,7 @@ class Updater
     public static $source_path;
     public static $dest_path;
     public static $cache_path;
+    public static $post_extension;
 
     public static $frontpage_post_limit = 20;
     public static $frontpage_template = 'main.php';
@@ -57,7 +58,7 @@ class Updater
             $in_month = false;
             $files = array();
             foreach ($all_files as $fname => $info) {
-                if (substr($fname, -4) != '.txt') continue;
+                if (substr($fname, -(strlen(self::$post_extension))) != self::$post_extension) continue;
 
                 // Tag/type filtering
                 list($ignored_hash, $type, $tags) = explode('|', $info, 3);
@@ -105,7 +106,7 @@ class Updater
         error_log("Resequencing post offsets for $year-$month-$day");
 
         $prefix = self::$source_path . "/posts/$year/$month/$year$month$day-";
-        $files = glob($prefix . '*.txt');
+        $files = glob($prefix . '*' . self::$post_extension);
         if (count($files) > 99) {
             error_log("Cannot resequence offsets for $year-$month-$day: too many posts (" . count($files) . ')');
             return false;
@@ -130,7 +131,7 @@ class Updater
         foreach ($timestamps as $filename => $timestamp) {
             $offset++;
 
-            $slug = preg_replace('/-p[0-9]{1,2}$/ms', '', substr(basename($filename), 12, -4));
+            $slug = preg_replace('/-p[0-9]{1,2}$/ms', '', substr(basename($filename), 12, -(strlen(self::$post_extension))));
             if (! isset($slugs[$slug])) $slugs[$slug] = 1;
             else $slugs[$slug]++;
 
@@ -138,7 +139,7 @@ class Updater
                 $prefix . 
                 str_pad($offset, 2, '0', STR_PAD_LEFT) . '-' . 
                 $slug . ($slugs[$slug] < 2 ? '' : '-p' .$slugs[$slug]) .
-                '.txt'
+                self::$post_extension
             ;
             if ($filename != $correct_filename) {
                 error_log("file [$filename] should be [$correct_filename]");
@@ -180,7 +181,7 @@ class Updater
                         
                         $tags = '';
                         $type = '';
-                        if ($parse_info_in_text_files && substr($fullpath, -4) == '.txt') {
+                        if ($parse_info_in_text_files && substr($fullpath, -(strlen(self::$post_extension))) == self::$post_extension) {
                             $post = new Post($fullpath);
                             $tags = implode(',', $post->tags);
                             $type = $post->type;
@@ -237,7 +238,7 @@ class Updater
 
         $posts = array();
         foreach ($fileinfo as $filename => $info) {
-            if (substr($filename, -4) != '.txt') continue;
+            if (substr($filename, -(strlen(self::$post_extension))) != self::$post_extension) continue;
             list($ignored_hash, $type, $tags) = explode('|', $info, 3);
             $include = true;
             if ($require_type) {
@@ -284,7 +285,7 @@ class Updater
     public static function months_with_posts($scope = '')
     {
         $cache_fname = self::$cache_path . "/months-with-posts-$scope";
-        if (! file_exists($cache_fname)) throw new Exception('Cache files not found, expected');
+        if (! file_exists($cache_fname)) throw new Exception('Cache files not found, expected ' . $cache_fname);
         return unserialize(file_get_contents($cache_fname));
     }
     
@@ -323,7 +324,7 @@ class Updater
             }
 
             if (! file_exists($filename)) {
-                if (ends_with($filename, '.txt')) {
+                if (ends_with($filename, self::$post_extension)) {
                     error_log("Deleted draft $filename");
                     $html_preview_filename = self::$source_path . '/drafts/_previews/' . substring_before(basename($filename), '.', true) . '.html';
                     if (file_exists($html_preview_filename)) safe_unlink($html_preview_filename);
@@ -331,7 +332,7 @@ class Updater
                 continue;
             }
 
-            if (substr($filename, -4) == '.txt') {
+            if (substr($filename, -(strlen(self::$post_extension))) == self::$post_extension) {
                 $post = new Post($filename, true);
                 if ($post->publish_now) {
                     $post = new Post($filename, false);
@@ -378,7 +379,7 @@ class Updater
             self::$changes_were_written = true;
             
             if (! file_exists($filename)) {
-                if (ends_with($filename, '.txt')) {
+                if (ends_with($filename, self::$post_extension)) {
                     error_log("Deleted page $filename");
                     $dest_filename = self::$dest_path . '/' . substring_before(basename($filename), '.', true);
                     if (file_exists($dest_filename)) safe_unlink($dest_filename);
@@ -386,9 +387,9 @@ class Updater
                 continue;
             }
 
-            if (substr($filename, -4) == '.txt') {
+            if (substr($filename, -(strlen(self::$post_extension))) == self::$post_extension) {
                 $post = new Post($filename, true);
-                $post->slug = basename($filename, '.txt');
+                $post->slug = basename($filename, self::$post_extension);
                 error_log("Writing page [{$post->slug}]");
                 $post->write_page(true);
             }
@@ -438,7 +439,7 @@ class Updater
         foreach (self::changed_files_in_directory(self::$source_path . '/posts') as $filename => $info) {
             self::$posts_to_be_updated[$filename] = true;
             
-            if (substr($filename, -4) == '.txt') {
+            if (substr($filename, -(strlen(self::$post_extension))) == self::$post_extension) {
                 list($old_info, $new_info) = $info;
                 list($old_hash, $old_type, $old_tags) = explode('|', $old_info, 3);
                 list($new_hash, $new_type, $new_tags) = explode('|', $new_info, 3);
@@ -467,7 +468,7 @@ class Updater
                     $year = substr($filename_datestr, 0, 4);
                     $month = substr($filename_datestr, 4, 2);
                     $day = substr($filename_datestr, 6, 2);
-                    $slug = substr(basename($filename), 12, -4);
+                    $slug = substr(basename($filename), 12, -(strlen(self::$post_extension)));
                     $target_filename = self::$dest_path . "/$year/$month/$day/$slug";
                     if ($year && $month && $day && $slug && file_exists($target_filename)) {
                         error_log("Deleting abandoned target file: $target_filename");
@@ -480,7 +481,7 @@ class Updater
             error_log("Updating post: $filename");
             self::$changes_were_written = true;
 
-            if (substr($filename, -4) == '.txt') {
+            if (substr($filename, -(strlen(self::$post_extension))) == self::$post_extension) {
                 $post = new Post($filename);
                 $post->write_permalink_page();
 
