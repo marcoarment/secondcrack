@@ -7,7 +7,7 @@ class TumblrPostHookCredentials
     public static $account_password = '';
     
      // The part that goes here: (blog name).tumblr.com
-    public static $blog_name = 'test';
+    public static $blog_name = '';
 }
 
 // Test your credentials by executing this file alone from the command line:
