@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__) . '/Post.php');
 require_once(dirname(__FILE__) . '/Hook.php');
+require_once(dirname(__FILE__) . '/Sitemap.php');
 
 class Updater
 {
@@ -412,6 +413,8 @@ class Updater
         do {
             $status = self::_update();
         } while ($status == self::RESEQUENCED_POSTS);
+
+        $sitemap = new Sitemap(self::$dest_path, self::$cache_path);
 
         return $status;
     }
