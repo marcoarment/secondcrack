@@ -353,10 +353,6 @@ class Updater
                 } else {
                     $post->write_permalink_page(true);
                 }
-            } else {
-                $draft_dest_path = self::$dest_path . '/www/drafts';
-                if (! file_exists($draft_dest_path)) mkdir_as_parent_owner($draft_dest_path, 0755, true);
-                copy($filename, $draft_dest_path . '/' . basename($filename));
             }
         }        
     }
