@@ -9,6 +9,11 @@ class Updater
     public static $dest_path;
     public static $cache_path;
     public static $post_extension = '.txt';
+    
+    // This option writes each draft preview into (web root)/drafts/whatever-slug
+    // Without it, drafts only reside in the (source)/drafts/_previews folder 
+    //  and are not accessible publicly.
+    public static $write_public_drafts = false;
 
     public static $frontpage_post_limit = 20;
     public static $frontpage_template = 'main.php';
@@ -326,8 +331,11 @@ class Updater
             if (! file_exists($filename)) {
                 if (ends_with($filename, self::$post_extension)) {
                     error_log("Deleted draft $filename");
-                    $html_preview_filename = self::$source_path . '/drafts/_previews/' . substring_before(basename($filename), '.', true) . '.html';
+                    $slug = substring_before(basename($filename), '.', true);
+                    $html_preview_filename = self::$source_path . '/drafts/_previews/' . $slug . '.html';
+                    $webroot_preview_filename = self::$dest_path . '/drafts/' . $slug;
                     if (file_exists($html_preview_filename)) safe_unlink($html_preview_filename);
+                    if (file_exists($webroot_preview_filename)) safe_unlink($webroot_preview_filename);
                 }
                 continue;
             }

@@ -240,11 +240,13 @@ class Post
         );
         $output_html = $t->outputHTML();
 
-        $output_www_path = $draft ? '/drafts' : dirname($post_data['post-permalink']);
-        $output_path = Updater::$dest_path . $output_www_path;
-        if (! file_exists($output_path)) mkdir_as_parent_owner($output_path, 0755, true);
-        file_put_contents_as_dir_owner(Updater::$dest_path . ($draft ? '/drafts/' . $this->slug : $post_data['post-permalink']), $output_html);
-
+        if (! $draft || Updater::$write_public_drafts) {
+            $output_www_path = $draft ? '/drafts' : dirname($post_data['post-permalink']);
+            $output_path = Updater::$dest_path . $output_www_path;
+            if (! file_exists($output_path)) mkdir_as_parent_owner($output_path, 0755, true);
+            file_put_contents_as_dir_owner(Updater::$dest_path . ($draft ? '/drafts/' . $this->slug : $post_data['post-permalink']), $output_html);
+        }
+        
         if ($draft) file_put_contents_as_dir_owner(Updater::$source_path . '/drafts/_previews/' . $this->slug . '.html', $output_html);
     }
     
