@@ -414,8 +414,6 @@ class Updater
             $status = self::_update();
         } while ($status == self::RESEQUENCED_POSTS);
 
-        $sitemap = new Sitemap(self::$dest_path, self::$cache_path);
-
         return $status;
     }
     
@@ -678,6 +676,10 @@ class Updater
                 );
             }
         }
+
+		if ((self::$changes_were_written) || (Sitemap::should_write_sitemap(self::$dest_path))) {
+			Sitemap::write_sitemap(self::$dest_path, self::$cache_path);
+		}
     }
 }
 
