@@ -61,7 +61,6 @@ class Sitemap
 					if (substr($file, 0, 4) != "dir-") continue;
 					$fullpath = self::$cache_path . '/' . $file;
 					$fileinfo = unserialize(file_get_contents($fullpath));
-#					print_r($fileinfo);
 					foreach ($fileinfo as $key => $value) {
 						$filename = pathinfo($key, PATHINFO_FILENAME);
 						$parent = array_pop(split("/", pathinfo($key, PATHINFO_DIRNAME)));
