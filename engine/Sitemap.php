@@ -67,7 +67,7 @@ class Sitemap
 						$ts = array_shift(split("-", $value));
 						if ($parent == "pages")
 						{
-							self::entry("pages/" . $filename, $ts, self::$page_changefreq, self::$page_priority);
+							self::entry($filename, $ts, self::$page_changefreq, self::$page_priority);
 						}
 						elseif (pathinfo($key, PATHINFO_EXTENSION) == substr(UPDATER::$post_extension, 1))
 						{
