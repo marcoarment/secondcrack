@@ -15,7 +15,7 @@ if (! isset($_SERVER['PHP_AUTH_USER']) ||
 }
 
 $bookmarklet_code = <<<EOF
-var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),l=d.location,e=encodeURIComponent;w.location.href='TARGETadd-draft.php?u='+e(l.href)+'&t='+e(d.title)+'&s='+e(s)+'&EXTRA';
+var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),l=d.location,e=encodeURIComponent;w.location.href='TARGET/add-draft.php?u='+e(l.href)+'&t='+e(d.title)+'&s='+e(s)+'&EXTRA';
 EOF;
 
 $bookmarklet_code = str_replace('TARGET', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . '/', trim($bookmarklet_code));
@@ -38,7 +38,6 @@ if (! isset($_GET['u'])) {
     <?
     exit;
 }
-
 $url = substring_before(normalize_space($_GET['u']), ' ');
 $title = normalize_space($_GET['t']);
 $selection = trim($_GET['s']);
@@ -56,7 +55,7 @@ if ($selection) {
 $draft_contents = 
     $title . "\n" . 
     str_repeat('=', max(10, min(40, strlen($title)))) . "\n" .
-    ($is_link ? "Link: " . $url . "\n" : '') .
+    ($is_link ? "Link: " . $url . "\nTags: links\n" : '') .
     "publish-not-yet\n" .
     "\n" .
     $body
@@ -80,7 +79,7 @@ if (! chmod($output_filename, 0666)) die('File permission-set failed');
         <meta name="viewport" content="width=320"/>
         <title>Saved draft</title>
     </head>
-    <body style="font: Normal 26px 'Lucida Grande', Verdana, sans-serif; text-align:center; color:#888; margin-top:100px;">
+    <body style="background: #000; font: Normal 26px 'Lucida Grande', Verdana, sans-serif; text-align:center; color:#fff; margin-top:100px;">
         Saved.
         <br/>
         <br/>
