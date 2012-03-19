@@ -66,7 +66,7 @@ $output_path = Updater::$source_path . '/drafts';
 if (! file_exists($output_path)) die("Drafts path doesn't exist: [$output_path]");
 if (! is_writable($output_path)) die("Drafts path isn't writable: [$output_path]");
 
-$output_filename = $output_path . '/' . $slug . '.txt';
+$output_filename = $output_path . '/' . $slug . Updater::$post_extension;
 if (! file_put_contents($output_filename, $draft_contents)) die('File write failed');
 if (! chmod($output_filename, 0666)) die('File permission-set failed');
 

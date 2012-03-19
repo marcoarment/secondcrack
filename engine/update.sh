@@ -2,7 +2,7 @@
 
 if [ "$1" == "" -o "$2" == "" ] ; then
     echo ""
-    echo "Usage: updater.sh SOURCE_PATH SECONDCRACK_PATH"
+    echo "Usage: update.sh SOURCE_PATH SECONDCRACK_PATH"
     echo "  where SOURCE_PATH contains /posts, /templates, ..."
     echo "  and SECONDCRACK_PATH contains /cache, /engine, ..."
     echo ""
