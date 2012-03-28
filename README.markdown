@@ -35,7 +35,7 @@ Your webserver should use `{SECONDCRACK_PATH}/www` as its document root. It must
 
 # Basics
 
-Each `.txt` blog-post file is structured like this:
+Each `.md` blog-post file is structured like this:
 
     This is the post title
     ======================
@@ -56,8 +56,8 @@ The engine expects a folder structure like this: (this is your `{SOURCE_PATH}` m
 
     (blog-source folder, name it whatever you want)/
         drafts/
-            draft-post-slug.txt
-            another-draft-post-slug.txt
+            draft-post-slug.md
+            another-draft-post-slug.md
             ...
         media/
             (images and other files however you want to arrange them. I do it like this:)
@@ -70,18 +70,18 @@ The engine expects a folder structure like this: (this is your `{SOURCE_PATH}` m
                     another-day-another-post2.jpg
                     ...
         pages/
-            about.txt
-            contact-me.txt
+            about.md
+            contact-me.md
             ...
         posts/
             2010/
             2011/
             2012/
                 01/
-                    20120102-01-post-slug.txt
-                    20120103-01-another-day-another-post.txt
-                    20120104-01-something-happened-today.txt
-                    20120104-02-something-else-happened-and-its-still-today.txt
+                    20120102-01-post-slug.md
+                    20120103-01-another-day-another-post.md
+                    20120104-01-something-happened-today.md
+                    20120104-02-something-else-happened-and-its-still-today.md
         templates/
             (this can technically be anywhere but it's easiest to keep it here)
             main.php
@@ -100,7 +100,7 @@ The blog-source folder (`{SOURCE_PATH}`) should be set as `Updater::$source_path
 
 # Posting
 
-Make a file in `drafts/` named as `post-slug-you-want-to-create.txt` like this:
+Make a file in `drafts/` named as `post-slug-you-want-to-create.md` like this:
 
     My draft title
     ==============
@@ -112,14 +112,14 @@ Make a file in `drafts/` named as `post-slug-you-want-to-create.txt` like this:
 When the updater runs next, the engine will create a sister file in a `_previews/` directory (and a `_publish-now/` directory, if it doesn't already exist), like this:
 
     drafts/
-        post-slug-you-want-to-create.txt
+        post-slug-you-want-to-create.md
         ...
         _previews/
             post-slug-you-want-to-create.html
             ...
         _publish-now/
 
-Whenever you want to preview your post, just save the `.txt` file, run the updater (or wait for it to run itself), and open the corresponding `.html` file in your browser. When I'm writing, I just keep it open and hit Refresh to see changes.
+Whenever you want to preview your post, just save the `.md` file, run the updater (or wait for it to run itself), and open the corresponding `.html` file in your browser. When I'm writing, I just keep it open and hit Refresh to see changes.
 
 To publish a post, either move it into the `_publish-now/` directory, or add a header that simply says "publish-now", like this:
 
@@ -159,7 +159,7 @@ If you're writing on a computer, you probably have a server hosting the blog som
 With Dropbox set up, the publishing and previewing workflow is streamlined, and you never need to run the Second Crack updater manually:
 
 * Have the preview `.html` file open in your local browser.
-* Make changes to the draft `.txt` file. Hit Save in your editor.
+* Make changes to the draft `.md` file. Hit Save in your editor.
 * Wait a few seconds. The changes will round-trip to the server and the `.html` file will update.
 * Hit Refresh in the browser and see the changes you made, rendered right in your site's layout by the server-side engine.
 
