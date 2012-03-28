@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml" />
         <meta name="viewport" content="width=device-width" />
         <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/>
         <title><?= 
@@ -79,7 +79,7 @@
             <footer>
                 <p>&copy; 2006-2012 Marco Arment. All rights reserved.</p>
                 <p>
-                    <a href="/rss">RSS feed</a>.
+                    <a href="/rss.xml">RSS feed</a>.
                     Powered by <a href="http://www.marco.org/secondcrack">Second Crack</a>.
                 </p>
 
