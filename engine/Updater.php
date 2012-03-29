@@ -8,7 +8,7 @@ class Updater
     public static $source_path;
     public static $dest_path;
     public static $cache_path;
-    public static $post_extension = '.txt';
+    public static $post_extension = '.md';
     
     // This option writes each draft preview into (web root)/drafts/whatever-slug
     // Without it, drafts only reside in the (source)/drafts/_previews folder 
