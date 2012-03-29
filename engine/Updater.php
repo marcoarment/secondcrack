@@ -8,7 +8,7 @@ class Updater
     public static $source_path;
     public static $dest_path;
     public static $cache_path;
-    public static $post_extension = '.txt';
+    public static $post_extension = '.md';
     
     // This option writes each draft preview into (web root)/drafts/whatever-slug
     // Without it, drafts only reside in the (source)/drafts/_previews folder 
@@ -356,6 +356,22 @@ class Updater
             }
         }        
     }
+
+    public static function update_styles()
+    {
+        foreach (self::changed_files_in_directory(self::$source_path . '/templates') as $filename => $info) {
+            $file_info = pathinfo($filename);
+            if ($file_info['extension'] != 'css') continue;
+            
+            error_log("Changed style file: $filename");
+            $uri = substring_after($filename, self::$source_path . '/templates');
+            $dest_filename = self::$dest_path . $uri;
+            $output_path = dirname($dest_filename);
+            if (! file_exists($output_path)) mkdir_as_parent_owner($output_path, 0755, true);
+            copy($filename, $dest_filename);
+            self::$changes_were_written = true;
+        }
+    }
     
     public static function post_hooks($post)
     {
@@ -427,6 +443,7 @@ class Updater
         
         self::update_pages();
         self::update_drafts();
+        self::update_styles();
 
         foreach (self::changed_files_in_directory(self::$source_path . '/media') as $filename => $info) {
             error_log("Changed media file: $filename");
