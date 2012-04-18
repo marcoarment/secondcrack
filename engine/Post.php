@@ -262,12 +262,16 @@ class Post
         $posts_data = array();
         foreach ($posts as $p) $posts_data[] = $p->array_for_template();
 
+        $dest_uri = substring_after(substring_after($dest_path, '/', true), Updater::$dest_path);
+        $cdest_uri = substring_after($dest_path, Updater::$dest_path);
         $t = new Template($template);
         $t->content = array(
             'page-title' => html_entity_decode(SmartyPants($title), ENT_QUOTES, 'UTF-8'),
             'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
             'blog-url' => self::$blog_url,
             'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
+			'canonical-url'=>rtrim(self::$blog_url, '/') . str_replace(".html","",$cdest_uri),
+			'page-id'=> str_replace(".html","",$dest_uri),
             'page-type' => $type,
             'posts' => $posts_data,
             'previous_page_url' => false,
@@ -287,6 +291,7 @@ class Post
         $new_dest_path = $dest_path;
         // $dest_uri = substring_after(substring_before($dest_path, '.', true), Updater::$dest_path);
         $dest_uri = substring_after(substring_after($dest_path, '/', true), Updater::$dest_path);
+        $cdest_uri = substring_after($dest_path, Updater::$dest_path);
         $total_sequences = ceil(count($posts) / $posts_per_page);
         while ($posts) {
             $sequence++;
@@ -304,6 +309,8 @@ class Post
                 'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
                 'blog-url' => self::$blog_url,
                 'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
+				'canonical-url'=>rtrim(self::$blog_url, '/') . str_replace(".html","",$cdest_uri),
+				'page-id'=> str_replace(".html","",$dest_uri),
                 'page-type' => $type,
                 'posts' => $posts_data,
                 'previous_page_url' => $sequence != 1 ? ($sequence == 2 ? $dest_uri : $dest_uri . '-' . ($sequence - 1)) : false,
