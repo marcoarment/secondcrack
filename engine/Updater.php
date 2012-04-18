@@ -2,7 +2,6 @@
 
 require_once(dirname(__FILE__) . '/Post.php');
 require_once(dirname(__FILE__) . '/Hook.php');
-require_once(dirname(__FILE__) . '/Sitemap.php');
 
 class Updater
 {
@@ -94,49 +93,7 @@ class Updater
         }
         return $files;
     }
-    public static function posts_in_year($year, $require_tag = false, $require_type = false)
-    {
-        $month = str_pad($month, 2, '0', STR_PAD_LEFT);
-        $cache_fname = self::$cache_path . "/posts-$year-" . md5($require_tag . ' ' . $require_type);
-        if (file_exists($cache_fname)) {
-            $files = unserialize(file_get_contents($cache_fname));
-        } else {
-            $all_files = self::filelist(self::$source_path . "/posts/$year/", true);
-            ksort($all_files);
-            $in_month = false;
-            $files = array();
-            foreach ($all_files as $fname => $info) {
-                if (substr($fname, -(strlen(self::$post_extension))) != self::$post_extension) continue;
-
-                // Tag/type filtering
-                list($ignored_hash, $type, $tags) = explode('|', $info, 3);
-                $include = true;
-                if ($require_type) {
-                    if ($require_type[0] == '!' && $type == $require_type) $include = false;
-                    else if ($require_type[0] != '!' && $type != $require_type) $include = false;
-                }
-                if ($require_tag) {
-                    if ($require_tag[0] == '!' && in_array($require_tag, Post::parse_tag_str($tags))) $include = false;
-                    else if ($require_tag[0] != '!' && ! in_array($require_tag, Post::parse_tag_str($tags))) $include = false;
-                }
-                if (! $include) continue;
-
-                list($y, $m, $d) = array_map('intval', array_slice(explode('/', $fname), -3, 3));
-                $d = intval(substr($d, 6));
-                if ($year == $y && $month == $m) {
-                    if (isset($files[$d])) $files[$d][] = $fname;
-                    else $files[$d] = array($fname);
-                } else {
-                    if ($in_month) break;
-                }
-            }
-            
-            if (! file_exists(self::$cache_path)) mkdir_as_parent_owner(self::$cache_path, 0755, true);
-            file_put_contents_as_dir_owner($cache_fname, serialize($files));
-        }
-        return $files;
-    }
-        
+    
     public static function post_filenames_in_year_month($year, $month, $require_tag = false, $require_type = false)
     {
         $out = array();
@@ -145,15 +102,6 @@ class Updater
         }
         return $out;
     }
-    public static function post_filenames_in_year($year, $require_tag = false, $require_type = false)
-    {
-        $out = array();
-        foreach (self::posts_in_year($year, $require_tag, $require_type) as $day) {
-            foreach ($day as $filename) $out[] = $filename;
-        }
-        return $out;
-    }
-
     
     private static function resequence_post_offsets($year, $month, $day)
     {
@@ -409,6 +357,22 @@ class Updater
         }        
     }
     
+	public static function update_styles()
+    {
+        foreach (self::changed_files_in_directory(self::$source_path . '/templates') as $filename => $info) {
+            $file_info = pathinfo($filename);
+            if ($file_info['extension'] != 'css') continue;
+            
+            error_log("Changed style file: $filename");
+            $uri = substring_after($filename, self::$source_path . '/templates');
+            $dest_filename = self::$dest_path . $uri;
+            $output_path = dirname($dest_filename);
+            if (! file_exists($output_path)) mkdir_as_parent_owner($output_path, 0755, true);
+            copy($filename, $dest_filename);
+            self::$changes_were_written = true;
+        }
+    }    
+    
     public static function post_hooks($post)
     {
         $dir = self::$source_path . '/hooks';
@@ -479,6 +443,7 @@ class Updater
         
         self::update_pages();
         self::update_drafts();
+#		self::update_styles();
 
         foreach (self::changed_files_in_directory(self::$source_path . '/media') as $filename => $info) {
             error_log("Changed media file: $filename");
@@ -727,9 +692,6 @@ class Updater
                 );
             }
         }
-		if ((self::$changes_were_written) || (Sitemap::should_write_sitemap(self::$dest_path))) {
-			Sitemap::write_sitemap(self::$dest_path, self::$cache_path);
-		}        
     }
 }
 

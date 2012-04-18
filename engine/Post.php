@@ -65,6 +65,8 @@ class Post
         $this->timestamp = filemtime($source_filename);
 
         $segments = explode("\n\n", trim(file_get_contents($source_filename)), 2);
+#		$segments = preg_split( '/\R\R/',  trim(file_get_contents($source_filename)), 2);
+		
         if (! isset($segments[1])) $segments[1] = '';
 
         if (count($segments) > 1) {
