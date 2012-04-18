@@ -16,7 +16,9 @@
         <? if ($content['page-type'] != 'frontpage' && $content['page-type'] != 'page' && $content['page-type'] != 'post') { ?>
             <meta name="robots" content="noindex"/>
         <? } ?>
-    </head>
+		<?=( !empty($content['canonical-url']) ? '<link rel="canonical" href="'.$content['canonical-url'].'" />' : null)?>
+	</head>
+	<body <?=( !empty($content['page-id']) ? 'id="'.$content['page-id'].'"' : null)?>>
     <body>
         <div id="mastheadbackground">&nbsp;</div>
         

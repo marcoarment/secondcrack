@@ -206,6 +206,8 @@ class Post
             'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
             'blog-url' => self::$blog_url,
             'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
+            'canonical-url'=>rtrim(self::$blog_url, '/') . '/' . $this->slug,
+            'page-id'=>'page-'.$this->slug,
             'page-type' => 'page',
             'archives' => array(),
             'previous_page_url' => false,
@@ -219,6 +221,9 @@ class Post
     
     public function write_permalink_page($draft = false)
     {
+
+		$base_uri = '/' . $this->year . '/' . str_pad($this->month, 2, '0', STR_PAD_LEFT) . '/' . str_pad($this->day, 2, '0', STR_PAD_LEFT);
+
         $post_data = $this->array_for_template();
         $post_data['post-is-first-on-date'] = true;
 
@@ -230,6 +235,8 @@ class Post
                 'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
                 'blog-url' => self::$blog_url,
                 'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),
+	            'canonical-url'=>rtrim(self::$blog_url, '/') . $base_uri . '/' . $this->slug,
+	            'page-id'=>'post-'.$this->slug,
                 'page-type' => 'post',
                 'posts' => array($post_data),
                 'post' => $post_data,
