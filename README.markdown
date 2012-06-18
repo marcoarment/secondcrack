@@ -136,7 +136,7 @@ To edit a post, simply edit its file in `posts/`. The updater will notice the ch
 
 # Posting with bookmarklets
 
-Second Crack comes with a pair of convenience bookmarklets, "Draft Link" and "Draft Article", that create draft posts from the current page and any selected text.
+Second Crack comes with convenience bookmarklets—"Draft Link", "Draft Article", and "Draft Video Link"—that create draft posts from the current page and any selected text. "Draft Videos" will embed any Vimeo or YouTube videos.
 
 To enable this, create a second web root on an alternate domain, e.g. `admin.myblog.com`, using the `api-www/` folder as its document root. Then you can navigate to, e.g.:
 
