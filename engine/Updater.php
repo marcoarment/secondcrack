@@ -317,16 +317,6 @@ class Updater
     {
         foreach (self::changed_files_in_directory(self::$source_path . '/drafts') as $filename => $info) {
             self::$changes_were_written = true;
-            
-            if (contains($filename, '/_publish-now/') && file_exists($filename)) {
-                $post = new Post($filename, false);
-                $expected_fname = $post->expected_source_filename(true);
-                error_log("Publishing draft $filename");
-                $dir = dirname($expected_fname);
-                if (! file_exists($dir)) mkdir_as_parent_owner($dir, 0755, true);
-                if (file_put_contents_as_dir_owner($expected_fname, $post->normalized_source())) safe_unlink($filename);
-                self::post_hooks($post);
-            }
 
             if (! file_exists($filename)) {
                 if (ends_with($filename, self::$post_extension)) {
@@ -341,17 +331,29 @@ class Updater
             }
 
             if (substr($filename, -(strlen(self::$post_extension))) == self::$post_extension) {
-                $post = new Post($filename, true);
-                if ($post->publish_now) {
+                if (contains($filename, '/_publish-now/')) {
                     $post = new Post($filename, false);
-                    $expected_fname = $post->expected_source_filename(true);
-                    error_log("Publishing draft $filename");
-                    $dir = dirname($expected_fname);
-                    if (! file_exists($dir)) mkdir_as_parent_owner($dir, 0755, true);
-                    if (file_put_contents_as_dir_owner($expected_fname, $post->normalized_source())) safe_unlink($filename);
-                    self::post_hooks($post);
-                } else {
-                    $post->write_permalink_page(true);
+                    if($post->timestamp == null || $post->timestamp < time()){
+                        $expected_fname = $post->expected_source_filename(true);
+                        error_log("Publishing draft $filename");
+                        $dir = dirname($expected_fname);
+                        if (! file_exists($dir)) mkdir_as_parent_owner($dir, 0755, true);
+                        if (file_put_contents_as_dir_owner($expected_fname, $post->normalized_source())) safe_unlink($filename);
+                        self::post_hooks($post);
+                    }
+                }else{            
+                    $post = new Post($filename, true);
+                    if ($post->publish_now && ($post->timestamp == null || $post->timestamp < time())) {
+                        $post = new Post($filename, false);
+                        $expected_fname = $post->expected_source_filename(true);
+                        error_log("Publishing draft $filename");
+                        $dir = dirname($expected_fname);
+                        if (! file_exists($dir)) mkdir_as_parent_owner($dir, 0755, true);
+                        if (file_put_contents_as_dir_owner($expected_fname, $post->normalized_source())) safe_unlink($filename);
+                        self::post_hooks($post);
+                    } else {
+                        $post->write_permalink_page(true);
+                    }
                 }
             }
         }        
