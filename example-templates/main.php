@@ -56,7 +56,7 @@
                 <? } ?>
             <? } ?>
             
-            <? if (isset($content['archives'])) { ?>
+            <? if (!empty($content['archives'])) { ?>
                 <nav id="archives">
                     <h3>Archives</h3> 
                     <div style="clear: both; font-size: 1px; line-height: 1px;">&nbsp;</div>
