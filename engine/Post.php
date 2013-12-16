@@ -64,7 +64,7 @@ class Post
         $this->is_draft = ($is_draft === -1 ? (false !== strpos($source_filename, 'drafts/') || false !== strpos($source_filename, 'pages/')) : $is_draft);
         $this->timestamp = filemtime($source_filename);
 
-        $segments = preg_split( '/\R\R/',  trim(file_get_contents($source_filename)), 2);
+        $segments = explode("\n\n", trim(file_get_contents($source_filename)), 2);
         if (! isset($segments[1])) $segments[1] = '';
 
         if (count($segments) > 1) {
@@ -168,6 +168,13 @@ class Post
         $source .= "\n" . $this->body;
         return $source;
     }
+
+    public function rendered_body()
+    {
+        $uid = $this->timestamp . $this->slug;
+        $footnote_id_prefix = 'p' . substr(preg_replace('/[^a-zA-Z0-9]/', '', base64_encode(md5($uid, true))), 0, 8);
+        return SmartyPants(Markdown($this->body, $footnote_id_prefix));
+    }
     
     public function array_for_template()
     {
@@ -184,7 +191,7 @@ class Post
                 'post-slug' => $this->slug,
                 'post-timestamp' => $this->timestamp,
                 'post-rss-date' => date('D, d M Y H:i:s T', $this->timestamp),
-                'post-body' => SmartyPants(Markdown($this->body)),
+                'post-body' => $this->rendered_body(),
                 'post-tags' => $tags,
                 'post-type' => $this->type,
                 'post-permalink' => $base_uri . '/' . $this->slug,
@@ -202,7 +209,7 @@ class Post
         $t = new Template(Updater::$page_template);
         $t->content = array(
             'page-title' => html_entity_decode(SmartyPants($this->title), ENT_QUOTES, 'UTF-8'),
-            'page-body' => SmartyPants(Markdown($this->body)),
+            'page-body' => $this->rendered_body(),
             'blog-title' => html_entity_decode(SmartyPants(self::$blog_title), ENT_QUOTES, 'UTF-8'),
             'blog-url' => self::$blog_url,
             'blog-description' => html_entity_decode(SmartyPants(self::$blog_description), ENT_QUOTES, 'UTF-8'),

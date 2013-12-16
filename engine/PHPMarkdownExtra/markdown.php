@@ -49,7 +49,7 @@ define( 'MARKDOWNEXTRA_VERSION',  "1.2.4" ); # Sat 10 Oct 2009
 
 @define( 'MARKDOWN_PARSER_CLASS',  'MarkdownExtra_Parser' );
 
-function Markdown($text) {
+function Markdown($text, $footnote_id_prefix = "") {
 #
 # Initialize the parser and return the result of its transform method.
 #
@@ -59,6 +59,8 @@ function Markdown($text) {
 		$parser_class = MARKDOWN_PARSER_CLASS;
 		$parser = new $parser_class;
 	}
+
+        $parser->fn_id_prefix = $footnote_id_prefix;
 
 	# Transform text using parser.
 	return $parser->transform($text);
