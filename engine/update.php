@@ -10,7 +10,7 @@ if (file_exists(LOCK_FILE) &&
     exit(1);
 }
 
-if (file_put_contents(LOCK_FILE, posix_getpid())) {
+if (file_put_contents(LOCK_FILE, getmypid())) {
     register_shutdown_function(
         function() {
             try { unlink(LOCK_FILE); } catch (Exception $e) {
