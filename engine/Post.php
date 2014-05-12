@@ -62,9 +62,11 @@ class Post
     {
         $this->source_filename = $source_filename;
         $this->is_draft = ($is_draft === -1 ? (false !== strpos($source_filename, 'drafts/') || false !== strpos($source_filename, 'pages/')) : $is_draft);
-        $this->timestamp = filemtime($source_filename);
+	$this->timestamp = filemtime($source_filename);
 
-        $segments = explode("\n\n", trim(file_get_contents($source_filename)), 2);
+	$source_contents = trim(file_get_contents($source_filename));
+	$segments = preg_split('/\r\n\r\n|\n\n/', $source_contents, 2);
+
         if (! isset($segments[1])) $segments[1] = '';
 
         if (count($segments) > 1) {
