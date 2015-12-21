@@ -243,6 +243,7 @@ class Post
                 'archives' => array(),
                 'previous_page_url' => false,
                 'next_page_url' => false,
+                'draft' => $draft,
             )
         );
         $output_html = $t->outputHTML();
