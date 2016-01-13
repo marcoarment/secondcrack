@@ -15,10 +15,10 @@ if (! isset($_SERVER['PHP_AUTH_USER']) ||
 }
 
 $bookmarklet_code = <<<EOF
-var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),l=d.location,e=encodeURIComponent;w.location.href='TARGETadd-draft.php?u='+e(l.href)+'&t='+e(d.title)+'&s='+e(s)+'&EXTRA';
+var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),l=d.location,e=encodeURIComponent;w.location.href='TARGET?u='+e(l.href)+'&t='+e(d.title)+'&s='+e(s)+'&EXTRA';
 EOF;
 
-$bookmarklet_code = str_replace('TARGET', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . '/', trim($bookmarklet_code));
+$bookmarklet_code = str_replace('TARGET', $_SERVER['SCRIPT_URI'], trim($bookmarklet_code));
 
 if (! isset($_GET['u'])) {
     ?>
