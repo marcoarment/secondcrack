@@ -2730,7 +2730,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				$note_id = $this->encodeAttribute($note_id);
 				
 				# Add backlink to last paragraph; create new paragraph if needed.
-				$backlink = "<a href=\"#fnref:$note_id\"$attr>&#8617;</a>";
+				$backlink = "<a href=\"#fnref:$note_id\"$attr>&#8617;&#xFE0E;</a>";
 				if (preg_match('{</p>$}', $footnote)) {
 					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
 				} else {
