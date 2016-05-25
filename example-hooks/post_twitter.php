@@ -165,7 +165,7 @@ function tweet_link_to_post(array $post_array_for_template)
 
     $short_url_length = 24; // Big, safe default (at time of writing, Twitter's value is actually 20)
     try {
-        $config = json_decode($oauth->request('GET', 'http://api.twitter.com/1/help/configuration.json'), true);
+        $config = json_decode($oauth->request('GET', 'http://api.twitter.com/1.1/help/configuration.json'), true);
         if (isset($config['short_url_length'])) $short_url_length = intval($config['short_url_length']);
         if ($short_url_length < 16) $short_url_length = 24; // sanity check
     } catch (Exception $e) { }
@@ -179,7 +179,7 @@ function tweet_link_to_post(array $post_array_for_template)
 
     $tweet_text .= ' ' . $url_to_use;
     $response = $oauth->request(
-        'POST', 'https://api.twitter.com/1/statuses/update.json', 
+        'POST', 'https://api.twitter.com/1.1/statuses/update.json',
         array('trim_user' => 'true', 'status' => $tweet_text)
     );
 
@@ -200,7 +200,7 @@ if ($command_line_test_mode) {
     $oauth->token = TwitterPostHookCredentials::$access_token;
     $oauth->token_secret = TwitterPostHookCredentials::$access_token_secret;    
 
-    $response = $oauth->request('GET', 'https://api.twitter.com/1/account/verify_credentials.json');
+    $response = $oauth->request('GET', 'https://api.twitter.com/1.1/account/verify_credentials.json');
     $user = @json_decode($response, true);
     
     if ($user && isset($user['error'])) {
