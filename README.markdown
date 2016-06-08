@@ -33,6 +33,8 @@ I strongly suggest installing <a href="https://github.com/rvoicilas/inotify-tool
 
 Your webserver should use `{SECONDCRACK_PATH}/www` as its document root. It must support `.htaccess` files and `mod_rewrite`. Second Crack will install its `engine/default.htaccess` file into the web document root as `.htaccess` if an `.htaccess` file doesn't already exist.
 
+If your webserver is running on Mac OS X, the server is has `short_open_tag = Off` in the PHP.ini file. In order for Second Crack to work, this will need to be enabled. The file is located by default in `/private/etc/php.ini`.
+
 # Basics
 
 Each `.md` blog-post file is structured like this:
