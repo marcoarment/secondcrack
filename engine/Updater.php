@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__) . '/Post.php');
 require_once(dirname(__FILE__) . '/Hook.php');
+require_once(dirname(__FILE__) . '/Sitemap.php');
 
 class Updater
 {
@@ -689,6 +690,10 @@ class Updater
                 );
             }
         }
+
+		if ((self::$changes_were_written) || (Sitemap::should_write_sitemap(self::$dest_path))) {
+			Sitemap::write_sitemap(self::$dest_path, self::$cache_path);
+		}
     }
 }
 
